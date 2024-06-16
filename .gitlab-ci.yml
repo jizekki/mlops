@@ -1,0 +1,59 @@
+stages:
+  - quality
+  - build
+  - publish
+  - release
+
+quality-check-job:
+  image: python:3.7
+  stage: quality
+  before_script:
+    - pip install poetry
+    - poetry config virtualenvs.in-project true
+    - poetry install
+  artifacts:
+      paths:
+        - .venv
+  script:
+    - PYTHONPATH=$PWD poetry run python -m unittest tests/test_app.py
+    - poetry run black .
+    - poetry run mypy .
+    - poetry run pycodestyle --exclude='.venv' .
+
+build-job:
+  image: docker:19.03.12
+  stage: build
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  services:
+    - docker:19.03.12-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+
+publish-heroku-job:
+  image: docker:19.03.12
+  stage: publish
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  services:
+    - docker:19.03.12-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $IMAGE_TAG
+    - docker tag $IMAGE_TAG registry.heroku.com/teaching-mlops/web
+    - docker login -u _ -p $HEROKU_TOKEN registry.heroku.com
+    - docker push registry.heroku.com/teaching-mlops/web
+  only:
+    - master
+
+release-job:
+  stage: release
+  before_script:
+    - curl https://cli-assets.heroku.com/install.sh | sh
+  script:
+    - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:release web -a teaching-mlops
+  only:
+    - master
+

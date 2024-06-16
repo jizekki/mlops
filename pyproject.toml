@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "project-ensc"
+version = "0.1.0"
+description = ""
+authors = ["DELMAS <remi.delmas@wiidii.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+spacy = "^2.3.2"
+bottle = "^0.12.18"
+swagger-ui-py = "^21.12.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+black = "^21.11b1"
+mypy = "^0.910"
+pycodestyle = "^2.8.0"
+boddle = "^0.2.9"
+locust = "^2.5.1"
+
+[tool.mypy]
+exclude = ".venv"
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 79
+exclude = ".venv"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

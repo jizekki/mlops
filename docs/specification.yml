@@ -1,0 +1,51 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Core News SM"
+  description: "This application provides an intent classification model for chatbot"
+basePath: "/api"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /intent:
+      get:
+        tags:
+          - "predictions"
+        summary: "Get the predictions from the model"
+        operationId: "intent_inference"
+        parameters:
+          - name: "sentence"
+            in: "body"
+            description: "the request sentence for which to get predictions"
+            schema:
+              type: "string"
+              example: "Trouve un hôtel près de Talence"
+            required: true
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: "Successfully received the predictions."
+
+  /intent-supported-languages:
+    get:
+      tags:
+        - "supported languages"
+      summary: "Get the supported languages of the application"
+      operationId: "supported_languages"
+      produces:
+        - "application/json"
+      responses:
+          200:
+            description: "Successfully received the supported languages."
+            
+  /health:
+    get:
+      tags:
+        - "health"
+      summary: "Get the health status of the server"
+      operationId: "health_check_endpoint"
+      responses:
+        200:
+          description: "The server is running normally"

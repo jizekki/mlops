@@ -1,0 +1,16 @@
+{
+  "exclusive_classes":true,
+  "architecture":"bow",
+  "labels":[
+    "purchase",
+    "find-restaurant",
+    "irrelevant",
+    "find-hotel",
+    "provide-showtimes",
+    "find-around-me",
+    "find-train",
+    "find-flight"
+  ],
+  "pretrained_vectors":null,
+  "pretrained_dims":null
+}
